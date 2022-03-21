@@ -4,6 +4,9 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import io.quarkus.runtime.annotations.RegisterForReflection;
+
+@RegisterForReflection
 public class ValuesIn extends BaseFilter<List<Object>> {
     public static final String FILTER_TYPE_NAME = "ValuesIn";
 

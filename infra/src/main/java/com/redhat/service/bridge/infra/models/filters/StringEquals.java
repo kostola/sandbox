@@ -2,6 +2,9 @@ package com.redhat.service.bridge.infra.models.filters;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import io.quarkus.runtime.annotations.RegisterForReflection;
+
+@RegisterForReflection
 public class StringEquals extends BaseFilter<String> {
     public static final String FILTER_TYPE_NAME = "StringEquals";
 

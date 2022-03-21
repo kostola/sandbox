@@ -53,7 +53,7 @@ public class ExecutorsProviderImpl implements ExecutorsProvider {
         try {
             return objectMapper.readValue(processorDefinition, ProcessorDTO.class);
         } catch (IOException e) {
-            throw new IllegalStateException("Cannot deserialize processor definition.");
+            throw new IllegalStateException("Cannot deserialize processor definition.", e);
         }
     }
 }

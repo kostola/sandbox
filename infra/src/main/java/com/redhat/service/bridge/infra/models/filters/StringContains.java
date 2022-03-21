@@ -4,6 +4,9 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import io.quarkus.runtime.annotations.RegisterForReflection;
+
+@RegisterForReflection
 public class StringContains extends BaseFilter<List<String>> {
 
     public static final String FILTER_TYPE_NAME = "StringContains";

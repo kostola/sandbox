@@ -2,6 +2,9 @@ package com.redhat.service.bridge.infra.models.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import io.quarkus.runtime.annotations.RegisterForReflection;
+
+@RegisterForReflection
 public class KafkaConnectionDTO {
 
     @JsonProperty("bootstrapServers")

@@ -9,6 +9,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
+import io.quarkus.runtime.annotations.RegisterForReflection;
+
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
         property = BaseFilter.FILTER_TYPE_FIELD)
@@ -19,6 +21,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         @JsonSubTypes.Type(value = ValuesIn.class, name = ValuesIn.FILTER_TYPE_NAME)
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
+@RegisterForReflection
 public abstract class BaseFilter<T> {
 
     public static final String FILTER_TYPE_FIELD = "type";
