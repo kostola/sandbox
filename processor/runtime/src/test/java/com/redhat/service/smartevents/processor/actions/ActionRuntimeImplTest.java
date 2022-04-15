@@ -6,6 +6,8 @@ import javax.inject.Inject;
 
 import org.junit.jupiter.api.Test;
 
+import com.redhat.service.smartevents.processor.actions.input.InputAction;
+import com.redhat.service.smartevents.processor.actions.input.InputActionInvokerBuilder;
 import com.redhat.service.smartevents.processor.actions.kafkatopic.KafkaTopicAction;
 import com.redhat.service.smartevents.processor.actions.kafkatopic.KafkaTopicActionInvokerBuilder;
 import com.redhat.service.smartevents.processor.actions.webhook.WebhookAction;
@@ -19,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class ActionRuntimeImplTest {
 
     private static final Map<String, Class<? extends ActionInvokerBuilder>> EXPECTED_BEANS = Map.of(
+            InputAction.TYPE, InputActionInvokerBuilder.class,
             KafkaTopicAction.TYPE, KafkaTopicActionInvokerBuilder.class,
             WebhookAction.TYPE, WebhookActionInvokerBuilder.class);
 

@@ -80,13 +80,12 @@ public abstract class AbstractWorker<T extends ManagedResource> implements Worke
                 updated = deleteDependencies(work, managedResource);
                 complete = isDeprovisioningComplete(updated);
             } catch (Exception e) {
-                LOGGER.info("Failed to delete dependencies for '{}' [{}].\n"
-                        + "Work status: {}\n"
-                        + "{}",
+                LOGGER.error("Failed to delete dependencies for '{}' [{}].\n"
+                        + "Work status: {}\n",
                         managedResource.getName(),
                         managedResource.getId(),
                         work,
-                        e.getMessage());
+                        e);
                 // Something has gone wrong. We need to retry.
                 workManager.recordAttempt(work);
             }

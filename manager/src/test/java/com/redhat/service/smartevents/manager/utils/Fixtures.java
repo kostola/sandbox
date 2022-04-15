@@ -54,6 +54,7 @@ public class Fixtures {
     public static ConnectorEntity createConnector(Processor p, ManagedResourceStatus status) {
         ConnectorEntity c = new ConnectorEntity();
         c.setName(TestConstants.DEFAULT_CONNECTOR_NAME);
+        c.setConnectorType("test_sink_0.1");
         c.setProcessor(p);
         c.setStatus(status);
         c.setSubmittedAt(ZonedDateTime.now());
