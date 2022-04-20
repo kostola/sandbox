@@ -67,6 +67,14 @@ class WebhookActionValidatorTest {
         assertIsInvalid("ftp://www.example.com/webhook", WebhookActionValidator.RESERVED_ATTRIBUTES_USAGE_MESSAGE, params);
     }
 
+    @Test
+    void isInvalidWithNullParameters() {
+        Action action = createActionWithEndpoint("https://www.example.com/webhook");
+        action.setParameters(null);
+        ValidationResult validationResult = validator.isValid(action);
+        assertThat(validationResult.isValid()).isFalse();
+    }
+
     private void assertIsValid(String endpoint) {
         Action action = createActionWithEndpoint(endpoint);
         ValidationResult validationResult = validator.isValid(action);

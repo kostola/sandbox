@@ -18,13 +18,17 @@ public class SlackSourceValidator implements SlackSource, GatewayValidator<Sourc
 
     @Override
     public ValidationResult isValid(Source source) {
+        if (source.getParameters() == null) {
+            return ValidationResult.invalid();
+        }
+
         Map<String, String> parameters = source.getParameters();
 
-        if (!parameters.containsKey(CHANNEL_PARAM) || parameters.get(CHANNEL_PARAM).isEmpty()) {
+        if (!parameters.containsKey(CHANNEL_PARAM) || parameters.get(CHANNEL_PARAM) == null || parameters.get(CHANNEL_PARAM).isEmpty()) {
             return ValidationResult.invalid(INVALID_CHANNEL_MESSAGE);
         }
 
-        if (!parameters.containsKey(TOKEN_PARAM) || parameters.get(TOKEN_PARAM).isEmpty()) {
+        if (!parameters.containsKey(TOKEN_PARAM) || parameters.get(TOKEN_PARAM) == null || parameters.get(TOKEN_PARAM).isEmpty()) {
             return ValidationResult.invalid(INVALID_TOKEN_MESSAGE);
         }
 

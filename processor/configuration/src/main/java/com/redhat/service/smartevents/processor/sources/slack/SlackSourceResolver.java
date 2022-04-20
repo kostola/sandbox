@@ -17,6 +17,8 @@ import com.redhat.service.smartevents.processor.actions.input.InputAction;
 @ApplicationScoped
 public class SlackSourceResolver implements SlackSource, GatewayResolver<Source> {
 
+    public static final String SLACK_SOURCE_CLOUD_EVENT_TYPE = "SlackSource";
+
     @Inject
     GatewayConfiguratorService gatewayConfiguratorService;
 
@@ -28,7 +30,7 @@ public class SlackSourceResolver implements SlackSource, GatewayResolver<Source>
         try {
             resolvedAction.setParameters(Map.of(
                     InputAction.ENDPOINT_PARAM, getBridgeWebhookUrl(customerId, bridgeId),
-                    InputAction.CLOUD_EVENT_TYPE, "SlackSource"));
+                    InputAction.CLOUD_EVENT_TYPE, SLACK_SOURCE_CLOUD_EVENT_TYPE));
         } catch (MalformedURLException e) {
             throw new ActionProviderException("Can't find events webhook for bridge " + bridgeId);
         }
