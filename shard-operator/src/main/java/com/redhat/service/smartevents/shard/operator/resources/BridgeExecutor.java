@@ -162,8 +162,13 @@ public class BridgeExecutor extends CustomResource<BridgeExecutorSpec, BridgeExe
             bridgeExecutorSpec.setId(processorId);
             bridgeExecutorSpec.setBridgeId(bridgeId);
             bridgeExecutorSpec.setCustomerId(customerId);
-            bridgeExecutorSpec.setProcessorType(processorType == null ? null : processorType.getValue());
             bridgeExecutorSpec.setProcessorName(processorName);
+
+            if (processorType != null) {
+                bridgeExecutorSpec.setProcessorType(processorType.getValue());
+            } else {
+                throw new IllegalStateException(String.format("No processor type for processorId: '%s'", processorId));
+            }
 
             try {
                 bridgeExecutorSpec.setProcessorDefinition(MAPPER.writeValueAsString(processorDefinition));
