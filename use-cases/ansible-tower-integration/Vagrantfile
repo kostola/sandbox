@@ -1,11 +1,41 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+WEBSERVER_COUNT = 1
+WEBSERVER_SETUP = <<SHELL
+sudo apt update -y
+sudo apt upgrade -y
+sudo apt install -y curl gnupg2 ca-certificates lsb-release
+sudo apt install -y nginx
+sudo systemctl enable nginx
+grep alcosta@alcosta-laptop /home/vagrant/.ssh/authorized_keys || echo 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDPm5zEXaTxFVgWdmTTi4rZ21jmVUWk3gLsifeXFo7nXyLgYfOZjwu2o8WFdj1qB0KBb+kPdYSqKQ6wsGddK2JWBMOjApuuTKgLzDrgTC0zS35MXU0Hy7l06KP5gOEngvgEjaZ0y2l5iQJPvokzgClauZxqpmD1PRCaoFAcg1YJUa2aTYNQMaq8sATYA5TTqkwttm2ZvexT6g6RbrpeeBO3g5JKIvKhndrO0ivmtrqKi3NIPUEqy3WGc5h3RTM9YxzKbNmh1wagzwAyBpTLvMwGrdpZeli365tWtbHO/t6+kdsz5sAM7QtWsDG43o0oGpNOU2VzsvatqBkj0IbwlO1IvqsHHVCes0lbDtvGDaMgUEsW0nXtm7AucftCZXsB2HjylfIQ1hqRlV7oZ6kr7x7JYtSDKuxEbd9cxLHIniJYtyi/lnnj6tlnA+qG5U58hwIBQc9e2DV5P0PWKPKEUaEmB3FNmYhdpjHdKEnSa4OqfGO9SWm4DdVpT2r/HxcNmMM= alcosta@alcosta-laptop' >> /home/vagrant/.ssh/authorized_keys
+ls /home/vagrant/useragent.rules || echo -e 'map $http_user_agent $badagent {\\n  default 0;\\n  ~Malware 1;\\n}' > /home/vagrant/useragent.rules
+sudo chown vagrant:vagrant /home/vagrant/useragent.rules
+ls /etc/nginx/useragent.rules || sudo ln -s /home/vagrant/useragent.rules /etc/nginx/useragent.rules
+grep useragent.rules /etc/nginx/nginx.conf || sed -i 's|include /etc/nginx/sites-enabled/\\*;|include /etc/nginx/useragent.rules;\\n\\tinclude /etc/nginx/sites-enabled/\\*;|' /etc/nginx/nginx.conf
+grep '$badagent' /etc/nginx/sites-available/default || sed -i 's|server_name _;|server_name _;\\n\\n\\tif ($badagent) {\\n\\t\\treturn 403;\\n\\t}|' /etc/nginx/sites-available/default
+sudo nginx -t
+sudo systemctl reload nginx
+SHELL
+
 Vagrant.configure("2") do |config|
-  config.vm.define "ansible_tower"
 
-  config.vm.box = "ansible/tower"
+    # Ansible Tower
+    config.vm.define "ansible_tower" do |tower|
+        tower.vm.box = "ansible/tower"
+        tower.vm.network :private_network, ip: "10.0.0.10"
+        tower.vm.network "forwarded_port", guest: 80, host: 10080
+        tower.vm.network "forwarded_port", guest: 443, host: 10443
+    end
 
-  config.vm.network "forwarded_port", guest: 80, host: 10080
-  config.vm.network "forwarded_port", guest: 443, host: 10443
+    (1..WEBSERVER_COUNT).each do |i|
+        config.vm.define "webserver#{i}" do |webserver|
+            webserver.vm.box = "debian/bullseye64"
+            webserver.vm.hostname = "webserver#{i}"
+            webserver.vm.network :private_network, ip: "10.0.0.#{i + 10}"
+            webserver.vm.network "forwarded_port", guest: 80, host: (10080 + i)
+            webserver.vm.provision "shell", inline: WEBSERVER_SETUP
+            webserver.vm.provision "shell", inline: "grep webserver#{i} /var/www/html/index.nginx-debian.html || sed -i 's|Welcome to nginx|Welcome to nginx in webserver#{i}|' /var/www/html/index.nginx-debian.html"
+        end
+    end
 end
