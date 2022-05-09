@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Test;
 import com.redhat.service.smartevents.infra.models.gateways.Action;
 import com.redhat.service.smartevents.infra.models.gateways.Gateway;
 import com.redhat.service.smartevents.infra.models.gateways.Source;
+import com.redhat.service.smartevents.processor.actions.ansibletower.AnsibleTowerAction;
+import com.redhat.service.smartevents.processor.actions.ansibletower.AnsibleTowerActionValidator;
 import com.redhat.service.smartevents.processor.actions.kafkatopic.KafkaTopicAction;
 import com.redhat.service.smartevents.processor.actions.kafkatopic.KafkaTopicActionValidator;
 import com.redhat.service.smartevents.processor.actions.sendtobridge.SendToBridgeAction;
@@ -37,6 +39,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class GatewayConfiguratorImplTest {
 
     private static final Map<String, ExpectedBeanClasses<Action>> EXPECTED_ACTION_BEANS = Map.of(
+            AnsibleTowerAction.TYPE, expect(AnsibleTowerActionValidator.class, null, null),
             KafkaTopicAction.TYPE, expect(KafkaTopicActionValidator.class, null, null),
             SendToBridgeAction.TYPE, expect(SendToBridgeActionValidator.class, SendToBridgeActionResolver.class, null),
             SlackAction.TYPE, expect(SlackActionValidator.class, SlackActionResolver.class, SlackActionConnector.class),

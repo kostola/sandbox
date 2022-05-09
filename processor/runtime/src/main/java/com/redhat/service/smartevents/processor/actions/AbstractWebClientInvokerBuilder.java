@@ -26,7 +26,11 @@ public abstract class AbstractWebClientInvokerBuilder implements ActionInvokerBu
 
     @PostConstruct
     private void onPostConstruct() {
-        webClient = WebClient.create(vertx, new WebClientOptions().setLogActivity(true));
+        webClient = WebClient.create(vertx, getWebClientOptions(new WebClientOptions().setLogActivity(true)));
+    }
+
+    protected WebClientOptions getWebClientOptions(WebClientOptions options) {
+        return options;
     }
 
     protected OidcClient getOidcClient() {
